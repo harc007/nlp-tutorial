@@ -6,16 +6,25 @@
 
 from collections import Counter
 import nltk
+
 '''
 Input string = "Whatay playa's\nWhatay wonderful playa\n"
 Output: (True, Counter({'playa': 2, 'Whatay': 2, 'wonderful': 1}))
 '''
 def get_word_count(string):
     try:
-        lower_string = string.lower().replace("'s", "")
-        tokens = nltk.word_tokenize(lower_string)
-        text = nltk.Text(tokens)
-        return (True, Counter(text))
+        words = nltk.word_tokenize(string)
+        stemmer = nltk.stem.snowball.SnowballStemmer("english")
+        stemmed_words = [stemmer.stem(i) for i in words]
+        return (True, Counter(stemmed_words))
     except Exception as e:
         return (False, e)
 
+'''
+get list of sentences from string. sent_tokenizer uses classifier
+'''
+def get_sentences(string):
+    try:
+        return (True, nltk.sent_tokenizer(string))
+    except Exception as e:
+        return (False, e)
