@@ -5,15 +5,17 @@
 #######################################################
 
 from collections import Counter
-
+import nltk
 '''
-Input string = "Whatay playa\nWhatay wonderful playa\n"
+Input string = "Whatay playa's\nWhatay wonderful playa\n"
 Output: (True, Counter({'playa': 2, 'Whatay': 2, 'wonderful': 1}))
 '''
 def get_word_count(string):
     try:
-        word_list = string.split()
-        return (True, Counter(word_list))
+        lower_string = string.lower().replace("'s", "")
+        tokens = nltk.word_tokenize(lower_string)
+        text = nltk.Text(tokens)
+        return (True, Counter(text))
     except Exception as e:
         return (False, e)
 
