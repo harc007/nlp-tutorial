@@ -28,3 +28,9 @@ def get_sentences(string):
         return (True, nltk.sent_tokenizer(string))
     except Exception as e:
         return (False, e)
+
+def get_minimum_distance(str1, str2):
+    try:
+        return (True, nltk.metrics.distance.edit_distance(str1, str2))
+    except Exception as e:
+        return (False, e)
