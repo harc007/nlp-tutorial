@@ -100,7 +100,8 @@ def build_ngrams_word2vec(s):
                 total_loss += loss.item()
             losses.append(total_loss)
         print(losses)
-        return losses
+        torch.save(model.state_dict(), 'ngrams.pth')
+        return model
     except Exception as e:
         print(traceback.format_exc())
         raise e
@@ -109,7 +110,7 @@ def build_cbow_word2vec(s):
     try:
         CONTEXT_SIZE = 4
         EMBEDDING_DIM = 300
-        EPOCH = 20
+        EPOCH = 10
         VERVOSE = 5
 
         corpus_text = s
@@ -167,7 +168,8 @@ def build_cbow_word2vec(s):
             word_2 = unique_vocab[3]
             word_1_vec = cbow.get_word_vector(word_to_idx[word_1])
             word_2_vec = cbow.get_word_vector(word_to_idx[word_2])
-            word_similarity = (word_1_vec.dot(word_2_vec) / (torch.norm(word_1_vec) * torch.norm(word_2_vec))).data.numpy()[0]
+            ws = (word_1_vec.reshape(word_1_vec.shape[1],).dot(word_2_vec.reshape(word_2_vec.shape[1],)) / (torch.norm(word_1_vec) * torch.norm(word_2_vec)))
+            word_similarity = ws.data.numpy()
             print("Similarity between '{}' & '{}' : {:0.4f}".format(word_1, word_2, word_similarity))
 
 
@@ -190,7 +192,9 @@ def build_cbow_word2vec(s):
 
         # train model- changed global variable if needed
         cbow = train_cbow(data, unique_vocab, word_to_idx)
-                                                                                                                                                                                                                # get two words similarity
+        torch.save(cbow.state_dict(), 'cbow.pth')
+        
+        # get two words similarity
         test_cbow(cbow, unique_vocab, word_to_idx)
         return cbow
     except Exception as e:
@@ -200,4 +204,5 @@ def build_cbow_word2vec(s):
 
 if __name__ == '__main__':
     corpus = read_corpus()
-    losses = build_ngrams_word2vec(corpus)
+    losses = build_ngrams_word2vec(corpus[:1000])
+    #cbow_model = build_cbow_word2vec(corpus[:1000].split())
